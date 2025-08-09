@@ -1,9 +1,9 @@
-FROM gradle:8.12.1-jdk21
+FROM gradle:7.4.0-jdk17
 
 WORKDIR /app
 
 COPY /app .
 
-RUN ["./gradlew", "clean", "build"]
+RUN gradle installDist
 
-CMD ["./gradlew", "run"]
+CMD ./build/install/app/bin/app
