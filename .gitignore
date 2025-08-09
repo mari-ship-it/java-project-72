@@ -1,0 +1,14 @@
+/.idea/
+.gradle
+
+build
+
+**/logs/
+
+*.class
+jte-classes
+*.settings
+.factorypath
+bin
+.classpath
+app.iml
