@@ -2,6 +2,7 @@ plugins {
     application
     jacoco
     checkstyle
+    id("io.freefair.lombok") version "8.13.1"
     id ("org.sonarqube") version "6.2.0.5505"
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
@@ -18,6 +19,8 @@ repositories {
 }
 
 dependencies {
+    implementation("com.h2database:h2:2.3.232")
+    implementation("com.zaxxer:HikariCP:7.0.1")
     implementation("io.javalin:javalin:6.1.3")
     implementation("org.slf4j:slf4j-simple:2.0.7")
     implementation("io.javalin:javalin-rendering:6.1.3")
