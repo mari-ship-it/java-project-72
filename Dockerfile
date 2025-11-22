@@ -4,6 +4,6 @@ WORKDIR /app
 
 COPY . .
 
-RUN ./gradlew installDist
+RUN make -C app run-dist
 
 CMD ./build/install/app/bin/app
