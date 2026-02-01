@@ -4,6 +4,6 @@ WORKDIR /app
 COPY . .
 
 RUN apt-get update && apt-get install -y gradle
-RUN gradle installDist
+RUN gradle build
 
-CMD ["sh", "-c", "./build/install/app/bin/app"]
+CMD ["sh", "-c", "java -jar build/libs/*.jar"]
