@@ -3,7 +3,8 @@ FROM eclipse-temurin:21-jdk
 WORKDIR /app
 COPY . .
 
-RUN apt-get update && apt-get install -y gradle
-RUN gradle build
+RUN chmod +x app/gradlew
 
-CMD ["sh", "-c", "java -jar build/libs/*.jar"]
+RUN make build
+
+CMD ["make", "run-dist"]

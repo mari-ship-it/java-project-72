@@ -1,3 +1,4 @@
+.PHONY: setup clean build install run-dist run dev test report lint sonar update-deeps image-build image-push build-run
 .DEFAULT_GOAL := build-run
 
 setup:
@@ -39,7 +40,4 @@ image-build:
 image-push:
 	docker push hexletcomponents/java-javalin-example:latest
 
-
 build-run: build run
-
-.PHONY: build

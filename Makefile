@@ -1,3 +1,6 @@
+.PHONY: build report run-dist test lint sonar image-build image-push
+.DEFAULT_GOAL := build
+
 build:
 	make -C app build
 
@@ -11,7 +14,7 @@ test:
 	make -C app test
 
 lint:
-	make -C app checkstyleMain
+	make -C app lint
 
 sonar:
 	make -C app sonar
