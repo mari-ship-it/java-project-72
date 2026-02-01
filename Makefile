@@ -1,4 +1,4 @@
-.PHONY: build report run-dist test lint sonar image-build image-push
+.PHONY: build build-daemonless report run-dist run-dist-daemonless test lint sonar image-build image-push
 .DEFAULT_GOAL := build
 
 build:

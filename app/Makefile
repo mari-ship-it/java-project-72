@@ -1,4 +1,4 @@
-.PHONY: setup clean build install run-dist run dev test report lint sonar update-deeps image-build image-push build-run
+.PHONY: setup clean build build-daemonless install run-dist run-dist-daemonless run test report lint sonar update-deeps image-build image-push build-run
 .DEFAULT_GOAL := build-run
 
 setup:
@@ -20,7 +20,7 @@ run-dist:
 	./gradlew installDist
 
 run-dist-daemonless:
-	./gradlew installDist --no-daemon
+	./gradlew installDist --no-daemon -x checkstyleMain
 
 run:
 	./gradlew run
