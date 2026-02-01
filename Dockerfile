@@ -1,9 +1,9 @@
 FROM eclipse-temurin:21-jdk
 
 WORKDIR /app
+COPY . .
 
-COPY /app .
+RUN chmod +x gradlew
+RUN ./gradlew installDist
 
-RUN gradle installDist
-
-CMD ./build/install/app/bin/app
+CMD ["./build/install/app/bin/app"]
