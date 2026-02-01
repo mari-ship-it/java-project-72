@@ -5,7 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import gg.jte.resolve.ResourceCodeResolver;
-import hexlet.code.dto.UrlsPage;
+//import hexlet.code.dto.UrlsPage;
 import hexlet.code.model.Url;
 import hexlet.code.repository.BaseRepository;
 import io.javalin.Javalin;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import io.javalin.rendering.template.JavalinJte;
 import lombok.extern.slf4j.Slf4j;
 
-import static io.javalin.rendering.template.TemplateUtil.model;
+//import static io.javalin.rendering.template.TemplateUtil.model;
 
 @Slf4j
 public class App {
@@ -81,8 +81,10 @@ public class App {
             ArrayList<Url> urls;
 
             if (term != null) {
+//                TODO:
 //                urls = ;
             } else {
+//                TODO
 //                urls = ;
             }
 //            var page = new UrlsPage(urls, term);
