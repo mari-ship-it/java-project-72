@@ -4,11 +4,17 @@
 build:
 	make -C app build
 
+build-daemonless:
+	make -C app build-daemonless
+
 report:
 	make -C app report
 
 run-dist:
 	make -C app run-dist
+
+run-dist-daemonless:
+	make -C app run-dist-daemonless
 
 test:
 	make -C app test

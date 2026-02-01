@@ -6,6 +6,8 @@ COPY . .
 RUN apt-get update && apt-get install -y make
 
 RUN chmod +x app/gradlew
-RUN make build
 
-CMD ["make", "run-dist"]
+# Сборка проекта без Checkstyle и без демона Gradle
+RUN make build-daemonless
+
+CMD ["make", "run-dist-daemonless"]

@@ -10,11 +10,17 @@ clean:
 build:
 	./gradlew clean build
 
+build-daemonless:
+	./gradlew clean build --no-daemon -x checkstyleMain
+
 install:
 	./gradlew clean install
 
 run-dist:
 	./gradlew installDist
+
+run-dist-daemonless:
+	./gradlew installDist --no-daemon
 
 run:
 	./gradlew run
