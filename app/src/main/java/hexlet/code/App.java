@@ -53,6 +53,7 @@ public class App {
     public static Javalin getApp() throws Exception {
         var hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl(getJDBCDatabaseUrl());
+        hikariConfig.setMaximumPoolSize(5);
 
         var dataSource = new HikariDataSource(hikariConfig);
         var sql = readResourceFile("schema.sql");
