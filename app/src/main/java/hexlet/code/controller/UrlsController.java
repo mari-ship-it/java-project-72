@@ -61,7 +61,7 @@ public class UrlsController {
                 UrlRepository.save(url);
                 ctx.sessionAttribute("flash", "Страница успешно добавлена!");
             }
-            ctx.redirect(NamedRoutes.urlsPath());
+            ctx.redirect("/urls");
 
         } catch (IllegalArgumentException | MalformedURLException e) {
             ctx.sessionAttribute("flash", "Некорректный URL");
