@@ -26,6 +26,7 @@ dependencies {
     implementation("org.slf4j:slf4j-simple:2.0.7")
     implementation("io.javalin:javalin:6.7.0")
     implementation("io.javalin:javalin-rendering:6.1.3")
+
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.assertj:assertj-core:3.25.3")
@@ -34,14 +35,22 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport)
 }
 
-tasks.jacocoTestReport { reports { xml.required.set(true) } }
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    } }
 
 sonar {
     properties {
         property ("sonar.projectKey", "mari-ship-it_java-project-72")
         property ("sonar.organization", "mari-ship-it")
-//        property ("sonar.host.url", "https://sonarcloud.io")
+        property ("sonar.host.url", "https://sonarcloud.io")
+        property ("sonar.coverage.jacoco.xmlReportPaths",
+        "${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
     }
 }
