@@ -28,6 +28,8 @@ dependencies {
     implementation("io.javalin:javalin-rendering:6.1.3")
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.assertj:assertj-core:3.25.3")
+    testImplementation("io.javalin:javalin-testtools:6.7.0")
 }
 
 tasks.test {
