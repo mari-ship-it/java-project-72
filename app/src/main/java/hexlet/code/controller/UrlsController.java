@@ -4,7 +4,6 @@ import hexlet.code.dto.UrlPage;
 import hexlet.code.dto.UrlsPage;
 import hexlet.code.model.Url;
 import hexlet.code.repository.UrlRepository;
-import hexlet.code.util.NamedRoutes;
 import io.javalin.http.Context;
 import io.javalin.http.NotFoundResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +39,7 @@ public class UrlsController {
         ctx.render("urls/show.jte", model("page", page));
     }
 
-    public static void create(Context ctx) throws SQLException{
+    public static void create(Context ctx) throws SQLException {
         String inputUrl = ctx.formParam("url");
 
         try {

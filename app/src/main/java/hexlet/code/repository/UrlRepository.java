@@ -4,6 +4,7 @@ import hexlet.code.model.Url;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,10 +40,9 @@ public class UrlRepository extends BaseRepository {
             var resultSet = stmt.executeQuery();
             if (resultSet.next()) {
                 String name = resultSet.getString("name");
-
-                var created= resultSet.getTimestamp("created_at").toLocalDateTime();
+                LocalDateTime localTime = resultSet.getTimestamp("created_at").toLocalDateTime();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-                String createdAt = created.format(formatter);
+                String createdAt = localTime.format(formatter);
 
                 Url url = new Url(name);
                 url.setId(id);
