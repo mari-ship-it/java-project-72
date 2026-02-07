@@ -3,7 +3,7 @@ plugins {
     jacoco
     checkstyle
     id("io.freefair.lombok") version "8.13.1"
-    id ("org.sonarqube") version "6.2.0.5505"
+    id("org.sonarqube") version "7.1.0.6387"
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
@@ -42,6 +42,6 @@ sonar {
     properties {
         property ("sonar.projectKey", "mari-ship-it_java-project-72")
         property ("sonar.organization", "mari-ship-it")
-        property ("sonar.host.url", "https://sonarcloud.io")
+//        property ("sonar.host.url", "https://sonarcloud.io")
     }
 }
