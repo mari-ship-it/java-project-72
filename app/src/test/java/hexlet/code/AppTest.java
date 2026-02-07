@@ -38,7 +38,7 @@ public class AppTest {
     }
 
     @Test
-    public void testUrlPage(){
+    public void testUrlPage() {
         JavalinTest.test(app, (server, client) -> {
             Url url = new Url("https://www.example.com");
             UrlRepository.save(url);
