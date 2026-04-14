@@ -30,6 +30,7 @@ dependencies {
     implementation(platform("com.konghq:unirest-java-bom:4.5.1"))
     implementation("com.konghq:unirest-java-core")
     implementation("com.konghq:unirest-modules-gson")
+    implementation("org.jsoup:jsoup:1.22.1")
 
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")

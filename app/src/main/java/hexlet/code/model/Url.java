@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @ToString
@@ -13,7 +15,9 @@ public class Url {
 
     @ToString.Include
     private String name;
-    private String createdAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime lastCheck;
+    private int statusCode;
 
     public Url(String name) {
         this.name = name;

@@ -2,10 +2,8 @@ package hexlet.code.repository;
 
 import hexlet.code.model.Url;
 
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -13,16 +11,14 @@ import java.util.Optional;
 public class UrlRepository extends BaseRepository {
 
     public static void save(Url url) throws SQLException {
-
         String sql = "INSERT INTO urls (name) VALUES (?)";
-        try (var conn = dataSource.getConnection();
-             var preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setString(1, url.getName());
-//            Timestamp createdAt = new Timestamp(System.currentTimeMillis());
-//            preparedStatement.setTimestamp(2, createdAt);
 
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            preparedStatement.setString(1, url.getName());
             preparedStatement.executeUpdate();
-            var generatedKeys = preparedStatement.getGeneratedKeys();
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
 
             if (generatedKeys.next()) {
                 url.setId(generatedKeys.getLong(1));
@@ -33,16 +29,17 @@ public class UrlRepository extends BaseRepository {
     }
 
     public static Optional<Url> find(Long id) throws SQLException {
-        var sql = "SELECT * FROM urls WHERE id = ?";
-        try (var conn = dataSource.getConnection();
-             var stmt = conn.prepareStatement(sql)) {
+        String sql = "SELECT * FROM urls WHERE id = ?";
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setLong(1, id);
-            var resultSet = stmt.executeQuery();
+            ResultSet resultSet = stmt.executeQuery();
+
             if (resultSet.next()) {
                 String name = resultSet.getString("name");
-                LocalDateTime localTime = resultSet.getTimestamp("created_at").toLocalDateTime();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-                String createdAt = localTime.format(formatter);
+                LocalDateTime createdAt = resultSet.getTimestamp("created_at").toLocalDateTime();
 
                 Url url = new Url(name);
                 url.setId(id);
@@ -54,38 +51,49 @@ public class UrlRepository extends BaseRepository {
     }
 
     public static List<Url> getEntities() throws SQLException {
-        var sql = "SELECT * FROM urls";
-        try (var conn = dataSource.getConnection();
-             var stmt = conn.prepareStatement(sql)) {
+        String sql = """
+        SELECT
+            u.id,
+            u.name,
+            c.status_code,
+            c.created_at AS last_check
+        FROM urls u
+        LEFT JOIN url_checks c
+            ON c.url_id = u.id
+           AND c.created_at = (
+                SELECT MAX(created_at)
+                FROM url_checks
+                WHERE url_id = u.id
+           )
+        ORDER BY u.id DESC;
+        """;
 
-            var resultSet = stmt.executeQuery();
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
             var result = new ArrayList<Url>();
-            while (resultSet.next()) {
-                var id = resultSet.getLong("id");
-                var name = resultSet.getString("name");
-
-                var created = resultSet.getTimestamp("created_at").toLocalDateTime();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-                String createdAt = created.format(formatter);
-
-                var url = new Url(name);
-                url.setId(id);
-                url.setCreatedAt(createdAt);
+            while (rs.next()) {
+                Url url = new Url(rs.getString("name"));
+                url.setId(rs.getLong("id"));
+                url.setLastCheck(rs.getTimestamp("last_check") != null ? rs.getTimestamp("last_check").toLocalDateTime() : null);
+                url.setStatusCode(rs.getInt("status_code"));
                 result.add(url);
             }
             return result;
         }
     }
     public static boolean search(String name) throws SQLException {
-        var sql = "SELECT * FROM urls WHERE name = ?";
-        try (var conn = dataSource.getConnection();
-             var stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, name);
+        String sql = "SELECT * FROM urls WHERE name = ?";
 
-            var resultSet = stmt.executeQuery();
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, name);
+            ResultSet resultSet = stmt.executeQuery();
 
             if (resultSet.next()) {
-                var inputName = resultSet.getString("name");
+                String inputName = resultSet.getString("name");
                 return inputName.equals(name);
             }
             return false;

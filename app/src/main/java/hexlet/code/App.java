@@ -12,9 +12,11 @@ import io.javalin.Javalin;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.stream.Collectors;
 
 import io.javalin.rendering.template.JavalinJte;
@@ -36,7 +38,8 @@ public class App {
     }
 
     private static String readResourceFile(String fileName) throws IOException {
-        var inputStream = App.class.getClassLoader().getResourceAsStream(fileName);
+        InputStream inputStream = App.class.getClassLoader().getResourceAsStream(fileName);
+
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             return reader.lines().collect(Collectors.joining("\n"));
         }
@@ -50,21 +53,21 @@ public class App {
     }
 
     public static void main(String[] args) throws Exception, SQLException {
-        var app = getApp();
+        Javalin app = getApp();
         app.start(getPort());
     }
 
     public static Javalin getApp() throws Exception {
-        var hikariConfig = new HikariConfig();
+        HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl(getJDBCDatabaseUrl());
         hikariConfig.setMaximumPoolSize(5);
 
-        var dataSource = new HikariDataSource(hikariConfig);
-        var sql = readResourceFile("schema.sql");
+        HikariDataSource dataSource = new HikariDataSource(hikariConfig);
+        String sql = readResourceFile("schema.sql");
         log.info(sql);
 
         try (var connection = dataSource.getConnection();
-             var statement = connection.createStatement()) {
+             Statement statement = connection.createStatement()) {
             statement.execute(sql);
         }
         BaseRepository.dataSource = dataSource;
@@ -91,7 +94,7 @@ public class App {
         app.get("/urls/{id}", UrlsController::show);
 
         app.post("/urls", UrlsController::create);
-//        app.post("/urls/{id}/checks", UrlsController::);
+        app.post("/urls/{id}/checks", UrlsController::checks);
 
         return app;
     }
