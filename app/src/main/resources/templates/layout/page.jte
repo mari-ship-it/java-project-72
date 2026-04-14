@@ -17,7 +17,7 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100">
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark bg-opacity-75">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">Анализатор страниц</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -35,7 +35,7 @@
 
 ${content}
 
-<footer class="footer border-top py-3 mt-5 bg-light">
+<footer class="footer border-top py-3 mt-5 bg-dark bg-opacity-10">
     <div class="container-xl">
         <div class="text-center">
             created by
