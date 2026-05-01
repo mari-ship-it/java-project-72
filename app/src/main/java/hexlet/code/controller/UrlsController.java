@@ -19,6 +19,7 @@ import java.net.URI;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 import static io.javalin.rendering.template.TemplateUtil.model;
 
@@ -65,16 +66,21 @@ public class UrlsController {
                     .append(tempUrl.getPort() != -1 ? ":" + tempUrl.getPort() : "")
                     .toString();
 
-            if (UrlRepository.search(name)) {
+            Optional<Url> foundUrl = UrlRepository.findByName(name);
+
+            if (foundUrl.isPresent()) {
+                Url url = foundUrl.get();
                 ctx.sessionAttribute("flash", "Страница уже существует!");
+                ctx.redirect("/urls/"+ url.getId());
             } else {
-                Url url = new Url(name);
-                UrlRepository.save(url);
+                Url newUrl = new Url(name);
+                UrlRepository.save(newUrl);
                 ctx.sessionAttribute("flash", "Страница успешно добавлена!");
+                ctx.redirect("/urls/" + newUrl.getId());
             }
-            ctx.redirect("/urls");
 
         } catch (IllegalArgumentException | MalformedURLException e) {
+
             ctx.sessionAttribute("flash", "Некорректный URL");
             ctx.redirect("/");
         }

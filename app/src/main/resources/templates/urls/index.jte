@@ -19,24 +19,24 @@ content = @`
             @endif
         @endif
 
-        <section>
-            <div class="container-lg mt-5 p-4 bg-light rounded shadow-sm">
-                <h1 class="mb-3 fw-light">Сайты</h1>
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover mb-0">
+        <section class="container">
+
+            <div class="">
+                <h1 class="mt-3 fw-light">Сайты</h1>
+                <table class="table table-bordered mt-4" data-test="urls">
                     <thead>
                     <tr>
-                        <th class="col-1">ID</th>
-                        <th>Имя</th>
-                        <th class="col-2">Последняя проверка</th>
-                        <th class="col-1">Код ответа</th>
+                        <th scope="col" class="fw-bold col-1">ID</th>
+                        <th scope="col" class="fw-bold">Название</th>
+                        <th scope="col" class="fw-bold col-2">Последняя проверка</th>
+                        <th scope="col" class="fw-bold col-1">Код ответа</th>
                     </tr>
                     </thead>
                     <tbody>
                     @for(var url: page.getUrls())
                         <tr>
                             <td>${url.getId()}</td>
-                            <td><a href="/urls/${url.getId()}" class="text-decoration-none text-dark">
+                            <td><a href="/urls/${url.getId()}">
                                     ${url.getName()}</a></td>
                             <td>
                                 @if(url.getLastCheck() != null)
@@ -53,8 +53,8 @@ content = @`
                     @endfor
                     </tbody>
                 </table>
-                </div>
             </div>
+
         </section>
     </main>
 `)

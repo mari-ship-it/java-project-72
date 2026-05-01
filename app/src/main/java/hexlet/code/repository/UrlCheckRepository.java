@@ -49,4 +49,8 @@ public class UrlCheckRepository extends BaseRepository {
         }
         return urlChecks;
     }
+
+    public static void deleteAll() {
+        UrlRepository.deleteAll();
+    }
 }
