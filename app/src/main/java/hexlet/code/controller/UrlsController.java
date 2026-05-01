@@ -122,7 +122,7 @@ public class UrlsController {
 
             UrlCheckRepository.save(check);
 
-            ctx.sessionAttribute("flash", "Страница успешно проверена");
+            ctx.sessionAttribute("flash", "Страница успешно проверена!");
         } catch (Exception e) {
             ctx.sessionAttribute("flash", "Ошибка при проверке страницы");
         }

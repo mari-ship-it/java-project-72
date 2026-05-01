@@ -8,8 +8,14 @@ content = @`
     <main class="flex-grow-1">
 
         @if(page != null && page.getFlash() != null)
-            @if(page.getFlash().contains("проверена"))
+
+            @if(page.getFlash().contains("добавлена") || page.getFlash().contains("проверена"))
                 <div class="rounded-0 m-0 alert alert-dismissible fade show alert-success" role="alert">
+                    <p class="m-0">${page.getFlash()}</p>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @elseif(page.getFlash().contains("существует"))
+                <div class="rounded-0 m-0 alert alert-dismissible fade show alert-info" role="alert">
                     <p class="m-0">${page.getFlash()}</p>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
