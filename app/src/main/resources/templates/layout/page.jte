@@ -1,4 +1,8 @@
 @import gg.jte.Content
+@import hexlet.code.dto.BasePage
+@import hexlet.code.util.NamedRoutes
+
+@param BasePage page = null
 @param Content content
 
 <!DOCTYPE html>
@@ -15,22 +19,28 @@
             integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
             crossorigin="anonymous"></script>
 </head>
-
 <body class="d-flex flex-column min-vh-100">
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/">Анализатор страниц</a>
+        <a class="navbar-brand" href="${NamedRoutes.rootPath()}">Анализатор страниц</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <div class="navbar-nav">
-                <a class="nav-link" href="/urls">Сайты</a>
+                <a class="nav-link" href="${NamedRoutes.urlsPath()}">Сайты</a>
             </div>
         </div>
     </div>
 </nav>
+
+@if(page != null && page.getFlash() != null)
+    <div class="rounded-0 m-0 alert alert-dismissible fade show alert-${page.getFlashType()}" role="alert">
+        <p class="m-0">${page.getFlash()}</p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
 
 ${content}
 
@@ -41,6 +51,6 @@ ${content}
             <a href="https://github.com/mari-ship-it" target="_blank">Marina Sirenko</a>
         </div>
     </div>
-</footer>
+</footer >
 </body>
 </html>

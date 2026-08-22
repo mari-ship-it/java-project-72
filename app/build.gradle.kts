@@ -32,6 +32,7 @@ dependencies {
     implementation("com.konghq:unirest-modules-gson")
     implementation("org.jsoup:jsoup:1.22.1")
 
+    testImplementation("com.squareup.okhttp3:mockwebserver3:5.3.0")
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.assertj:assertj-core:3.25.3")

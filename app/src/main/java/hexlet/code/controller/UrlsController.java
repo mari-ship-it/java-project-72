@@ -6,6 +6,7 @@ import hexlet.code.model.Url;
 import hexlet.code.model.UrlCheck;
 import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
+import hexlet.code.util.NamedRoutes;
 import io.javalin.http.Context;
 import io.javalin.http.NotFoundResponse;
 import kong.unirest.core.HttpResponse;
@@ -29,12 +30,8 @@ public class UrlsController {
     public static void index(Context ctx) throws SQLException {
         List<Url> urls = UrlRepository.getEntities();
         UrlsPage page = new UrlsPage(urls);
-
-        String flashMessage = ctx.sessionAttribute("flash");
-        if (flashMessage != null) {
-            page.setFlash(flashMessage);
-            ctx.sessionAttribute("flash", null);
-        }
+        page.setFlash(ctx.consumeSessionAttribute("flash"));
+        page.setFlashType(ctx.consumeSessionAttribute("flashType"));
         ctx.render("urls/index.jte", model("page", page));
     }
 
@@ -42,13 +39,10 @@ public class UrlsController {
         Long id = ctx.pathParamAsClass("id", Long.class).get();
         Url url = UrlRepository.find(id)
                 .orElseThrow(() -> new NotFoundResponse("Entity with id = " + id + " not found"));
-        List<UrlCheck> check = UrlCheckRepository.find(id);
-        String flashMessage = ctx.consumeSessionAttribute("flash");
-        UrlPage page = new UrlPage(url,check);
-
-        if (flashMessage != null) {
-            page.setFlash(flashMessage);
-        }
+        List<UrlCheck> checks = UrlCheckRepository.find(id);
+        UrlPage page = new UrlPage(url,checks);
+        page.setFlash(ctx.consumeSessionAttribute("flash"));
+        page.setFlashType(ctx.consumeSessionAttribute("flashType"));
         ctx.render("urls/show.jte", model("page", page));
     }
 
@@ -71,18 +65,21 @@ public class UrlsController {
             if (foundUrl.isPresent()) {
                 Url url = foundUrl.get();
                 ctx.sessionAttribute("flash", "Страница уже существует!");
-                ctx.redirect("/urls/"+ url.getId());
+                ctx.sessionAttribute("flashType", "info");
+                ctx.redirect(NamedRoutes.urlPath(url.getId()));
             } else {
                 Url newUrl = new Url(name);
                 UrlRepository.save(newUrl);
                 ctx.sessionAttribute("flash", "Страница успешно добавлена!");
-                ctx.redirect("/urls/" + newUrl.getId());
+                ctx.sessionAttribute("flashType", "success");
+                ctx.redirect(NamedRoutes.urlPath(newUrl.getId()));
             }
 
         } catch (IllegalArgumentException | MalformedURLException e) {
 
             ctx.sessionAttribute("flash", "Некорректный URL");
-            ctx.redirect("/");
+            ctx.sessionAttribute("flashType", "danger");
+            ctx.redirect(NamedRoutes.rootPath());
         }
     }
 
@@ -98,39 +95,31 @@ public class UrlsController {
 
             Document document = org.jsoup.Jsoup.parse(body);
             String title = document.title();
-            String h1 = null;
-            String description = null;
+            title = (title == null || title.isBlank()) ? null : title;
 
-            Element h1Element;
-            h1Element = document.selectFirst("h1");
+            Element h1Element = document.selectFirst("h1");
+            String h1 = (h1Element != null && !h1Element.text().isBlank()) ? h1Element.text() : null;
 
-            if (h1Element != null) {
-                h1 = h1Element.text();
-            }
-
-            Element meta = document.selectFirst("meta[name=description]");
-            if (meta != null) {
-                description = meta.attr("content");
-            }
+            Element metaDescription = document.selectFirst("meta[name=description]");
+            String description = (metaDescription != null && !metaDescription.attr("content").isBlank())
+                    ? metaDescription.attr("content")
+                    : null;
 
             UrlCheck check = new UrlCheck();
             check.setUrlId(id);
             check.setStatusCode(statusCode);
-            check.setTitle(title.isEmpty() ? null : title);
+            check.setTitle(title);
             check.setH1(h1);
             check.setDescription(description);
-
             UrlCheckRepository.save(check);
-
             ctx.sessionAttribute("flash", "Страница успешно проверена!");
+            ctx.sessionAttribute("flashType", "success");
+
         } catch (Exception e) {
+            log.error("Ошибка верификации URL: {}", e.getMessage(), e);
             ctx.sessionAttribute("flash", "Ошибка при проверке страницы");
+            ctx.sessionAttribute("flashType", "danger");
         }
-        String referer = ctx.header("Referer");
-        if (referer != null && !referer.isEmpty()) {
-            ctx.redirect(referer);
-        } else {
-            ctx.redirect("/urls");
-        }
+        ctx.redirect(NamedRoutes.urlPath(id));
     }
 }

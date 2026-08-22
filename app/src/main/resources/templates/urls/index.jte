@@ -1,9 +1,11 @@
 @import hexlet.code.dto.UrlsPage
+@import java.time.format.DateTimeFormatter
+@import hexlet.code.util.NamedRoutes
 @param UrlsPage page
 
 @template.layout.page(
+page = page,
 content = @`
-
     <main class="flex-grow-1">
         <section class="container">
             <div class="">
@@ -18,27 +20,29 @@ content = @`
                     </tr>
                     </thead>
                     <tbody>
-                        @for(var url: page.getUrls())
-                            <tr>
-                                <td>${url.getId()}</td>
-                                <td><a href="/urls/${url.getId()}">
-                                    ${url.getName()}</a></td>
-                                <td>
-                                    @if(url.getLastCheck() != null)
-                                        ${url.getLastCheck().format(java.time.format.DateTimeFormatter.
-                                            ofPattern("dd/MM/yyyy HH:mm"))}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if(url.getLastCheck() != null)
-                                        ${url.getStatusCode()}
-                                    @endif
-                                </td>
-                            </tr>
-                        @endfor
+                    @for(var url : page.getUrls())
+                        <tr>
+                            <td>${url.getId()}</td>
+                            <td>
+                                <a href="${NamedRoutes.urlPath(url.getId())}">${url.getName()}</a>
+                            </td>
+                            <td>
+                                @if(url.getLastCheck() != null)
+                                    ${url.getLastCheck().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))}
+                                @endif
+                            </td>
+                            <td>
+                                @if(url.getLastCheck() != null)
+                                    ${url.getStatusCode()}
+                                @endif
+                            </td>
+                        </tr>
+                    @endfor
                     </tbody>
                 </table>
             </div>
         </section>
     </main>
-`)
+`
+)
+
