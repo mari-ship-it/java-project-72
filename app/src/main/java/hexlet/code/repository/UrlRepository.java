@@ -2,7 +2,11 @@ package hexlet.code.repository;
 
 import hexlet.code.model.Url;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +92,7 @@ public class UrlRepository extends BaseRepository {
                 WHERE url_id = u.id
            )
         ORDER BY u.id DESC;
-        """;
+            """;
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -98,7 +102,8 @@ public class UrlRepository extends BaseRepository {
             while (rs.next()) {
                 Url url = new Url(rs.getString("name"));
                 url.setId(rs.getLong("id"));
-                url.setLastCheck(rs.getTimestamp("last_check") != null ? rs.getTimestamp("last_check").toLocalDateTime() : null);
+                var timestamp = rs.getTimestamp("last_check");
+                url.setLastCheck(timestamp != null ? timestamp.toLocalDateTime() : null);
                 url.setStatusCode(rs.getInt("status_code"));
                 result.add(url);
             }
@@ -128,7 +133,7 @@ public class UrlRepository extends BaseRepository {
             statement.executeUpdate("DELETE FROM url_checks");
             statement.executeUpdate("DELETE FROM urls");
         } catch (SQLException e) {
-        throw new RuntimeException("Ошибка при очистке базы данных", e);
+            throw new RuntimeException("Ошибка при очистке базы данных", e);
         }
     }
 }

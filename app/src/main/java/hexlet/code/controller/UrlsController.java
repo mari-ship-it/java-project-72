@@ -40,7 +40,7 @@ public class UrlsController {
         Url url = UrlRepository.find(id)
                 .orElseThrow(() -> new NotFoundResponse("Entity with id = " + id + " not found"));
         List<UrlCheck> checks = UrlCheckRepository.find(id);
-        UrlPage page = new UrlPage(url,checks);
+        UrlPage page = new UrlPage(url, checks);
         page.setFlash(ctx.consumeSessionAttribute("flash"));
         page.setFlashType(ctx.consumeSessionAttribute("flashType"));
         ctx.render("urls/show.jte", model("page", page));
