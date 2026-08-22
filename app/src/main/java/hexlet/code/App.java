@@ -5,9 +5,10 @@ import com.zaxxer.hikari.HikariDataSource;
 import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import gg.jte.resolve.ResourceCodeResolver;
+import hexlet.code.controller.RootController;
 import hexlet.code.controller.UrlsController;
-import hexlet.code.dto.BasePage;
 import hexlet.code.repository.BaseRepository;
+import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
 
 import java.io.BufferedReader;
@@ -15,14 +16,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.stream.Collectors;
 
 import io.javalin.rendering.template.JavalinJte;
 import lombok.extern.slf4j.Slf4j;
-
-import static io.javalin.rendering.template.TemplateUtil.model;
 
 @Slf4j
 public class App {
@@ -39,7 +37,6 @@ public class App {
 
     private static String readResourceFile(String fileName) throws IOException {
         InputStream inputStream = App.class.getClassLoader().getResourceAsStream(fileName);
-
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             return reader.lines().collect(Collectors.joining("\n"));
         }
@@ -52,7 +49,7 @@ public class App {
         return templateEngine;
     }
 
-    public static void main(String[] args) throws Exception, SQLException {
+    public static void main(String[] args) throws Exception {
         Javalin app = getApp();
         app.start(getPort());
     }
@@ -61,7 +58,6 @@ public class App {
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl(getJDBCDatabaseUrl());
         hikariConfig.setMaximumPoolSize(5);
-
         HikariDataSource dataSource = new HikariDataSource(hikariConfig);
         String sql = readResourceFile("schema.sql");
         log.info(sql);
@@ -76,26 +72,11 @@ public class App {
             config.bundledPlugins.enableDevLogging();
             config.fileRenderer(new JavalinJte(createTemplateEngine()));
         });
-
-        app.before(ctx -> {
-            ctx.contentType("text/html; charset=utf-8");
-        });
-
-        app.get("/", ctx -> {
-            BasePage page = new BasePage();
-            String flashMessage = ctx.consumeSessionAttribute("flash");
-
-            if (flashMessage != null) {
-                page.setFlash(flashMessage);
-            }
-            ctx.render("index.jte", model("page", page));
-        });
-        app.get("/urls", UrlsController::index);
-        app.get("/urls/{id}", UrlsController::show);
-
-        app.post("/urls", UrlsController::create);
-        app.post("/urls/{id}/checks", UrlsController::checks);
-
+        app.get(NamedRoutes.rootPath(), RootController::root);
+        app.get(NamedRoutes.urlsPath(), UrlsController::index);
+        app.get(NamedRoutes.urlPath("{id}"), UrlsController::show);
+        app.post(NamedRoutes.urlsPath(), UrlsController::create);
+        app.post(NamedRoutes.urlChecksPath("{id}"), UrlsController::checks);
         return app;
     }
 }
