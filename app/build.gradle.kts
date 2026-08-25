@@ -3,7 +3,7 @@ plugins {
     jacoco
     checkstyle
     id("io.freefair.lombok") version "8.13.1"
-    id("org.sonarqube") version "7.1.0.6387"
+    id("org.sonarqube") version "7.3.1.8318"
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
@@ -53,8 +53,8 @@ tasks.jacocoTestReport {
 
 sonar {
     properties {
-        property ("sonar.projectKey", "mari-ship-it_java-project-72")
-        property ("sonar.organization", "mari-ship-it")
+        property("sonar.projectKey", "mari-ship-it_java-project-72")
+        property("sonar.organization", "mari-ship-it")
         property ("sonar.host.url", "https://sonarcloud.io")
         property ("sonar.coverage.jacoco.xmlReportPaths",
         "${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
